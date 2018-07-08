@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
+[NetworkSettings(sendInterval = 0.033f)]
 public class PlayerControllerL : NetworkBehaviour
 {
     [SyncVar]
@@ -9,7 +10,8 @@ public class PlayerControllerL : NetworkBehaviour
     public string playerName;
 
     public int playerId;
-    
+    public NetworkGameManagerTurn ngmt;
+
     void Update()
     {
         if (!isLocalPlayer)
@@ -17,7 +19,10 @@ public class PlayerControllerL : NetworkBehaviour
             return;
         }
 
-        if (playerId != NetworkGameManagerTurn.sInstance.currentTurn)
+        if(ngmt == null)
+            ngmt = FindObjectOfType<NetworkGameManagerTurn>();
+
+        if (playerId != ngmt.iActivePlayer)
             return;
 
         var x = Input.GetAxis("Horizontal") * Time.deltaTime * 150.0f;
@@ -28,9 +33,9 @@ public class PlayerControllerL : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            NetworkGameManagerTurn.sInstance.OnTurnRequest();
+            iActivePlayer = ngmt.iActivePlayer;
+            CmdTurnChange();
         }
-
     }
 
     void Start()
@@ -62,21 +67,31 @@ public class PlayerControllerL : NetworkBehaviour
             playerId = 5;
         }
 
-        if (NetworkGameManager.sInstance != null)
-        {//we MAY be awake late (see comment on _wasInit above), so if the instance is already there we init
-            Init();
+        ngmt = FindObjectOfType<NetworkGameManagerTurn>();
+    }
+
+    [SyncVar(hook = "OnTurnChange")]
+    public int iActivePlayer = 0;
+    public int ActivePlayer
+    {
+        get
+        {
+            return iActivePlayer;
         }
     }
 
-    //hard to control WHEN Init is called (networking make order between object spawning non deterministic)
-    //so we call init from multiple location (depending on what between spaceship & manager is created first).
-    protected bool _wasInit = false;
-
-    public void Init()
+    void OnTurnChange(int value)
     {
-        if (_wasInit)
-            return;
-
-       _wasInit = true;
+        ngmt.iActivePlayer = value;
+        iActivePlayer = value;
+        Debug.Log(value);
     }
+
+    [Command]
+    public void CmdTurnChange()
+    {
+        iActivePlayer = ngmt.iActivePlayer;
+        iActivePlayer = (iActivePlayer + 1) % 2;
+    }
+
 }

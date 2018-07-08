@@ -6,5 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/UNet Chat/Example/Scene/ChatUNet.unity
-    guid: 855715eb4484f31478efa5041979d9e3
+    path: Assets/Scenes/newlobby.unity
+    guid: b7cfc4eb8370ed04b87d4b9a2183bdff
+  - enabled: 1
+    path: Assets/Scenes/unet.unity
+    guid: 6a962022586a4bb4eae634e7c6a2ec5b

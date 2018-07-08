@@ -102,7 +102,6 @@ public class NetworkGameManager : NetworkBehaviour
             //offset slightly so we are not out of screen at creation time (as it would destroy the asteroid right away)
             position -= position.normalized * 0.1f;
             
-
             GameObject ast = Instantiate(asteroidPrefabs[asteroidPrefabs.Length - 1], position, Quaternion.Euler(Random.value * 360.0f, Random.value * 360.0f, Random.value * 360.0f)) as GameObject;
 
             NetworkAsteroid asteroid = ast.GetComponent<NetworkAsteroid>();

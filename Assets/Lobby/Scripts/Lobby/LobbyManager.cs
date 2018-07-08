@@ -56,7 +56,7 @@ namespace Prototype.NetworkLobby
         void Start()
         {
             s_Singleton = this;
-            _lobbyHooks = GetComponent<Prototype.NetworkLobby.LobbyHook>();
+            _lobbyHooks = GetComponent<LobbyHook>();
             currentPanel = mainMenuPanel;
 
             backButton.gameObject.SetActive(false);
@@ -220,9 +220,6 @@ namespace Prototype.NetworkLobby
         {
             conn.Send(MsgKicked, new KickMsg());
         }
-
-
-
 
         public void KickedMessageHandler(NetworkMessage netMsg)
         {
